@@ -68,18 +68,39 @@ public class PEPMain {
 
         //locate rules from an ID
         String  nonapplicable = "no rule is applicable for this evaluation";
+        String  deny = "deny";
+        String  permit = "permit";
+        String  postpone = "postpone";
         List<Rule> collectedRules = new ArrayList<Rule>();
         collectedRules = domain.getRules();
         for (Rule rule : collectedRules)
         {
+            List list = new ArrayList();
             if ((rule.getSource().equals(resources_source))  && (rule.getSubject().equals(subject)) &&  (rule.getTarget().equals(resources_target)) )
             {
-             rule.getEffect();
-             return rule.getEffect().toString();
+
+             list.add(rule.getEffect().toString()) ;
             }
 
+            while (list.iterator().hasNext())
+            {
+                if( list.iterator().next().equals("deny"))  //value is equal to a String value
+                {
+                    return deny;
+                }
 
-    }
+                else
+
+                if( list.iterator().next().equals("postpone"))  //value is equal to a String value
+                {
+                    return postpone;
+
+                }
+                else return  permit;
+            }
+
+        }
+
         return nonapplicable;
     }
 

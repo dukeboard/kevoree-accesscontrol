@@ -63,7 +63,7 @@ public class PEPMain {
         return true;
     }
 
-    public String PDP(String subject, String action, String resources_source, String resources_target, Domain domain, AccessControlPolicy acModel) {
+    public String PDP(String subject, String action, String resources_source, String resources_target, AccessControlPolicy acModel) {
 
 
         //locate rules from an ID
@@ -72,7 +72,13 @@ public class PEPMain {
         String  permit = "permit";
         String  postpone = "postpone";
         List<Rule> collectedRules = new ArrayList<Rule>();
-        collectedRules = domain.getRules();
+
+        acModel.getDomains();
+        for (Domain domain : acModel.getDomains())
+        {
+            collectedRules = domain.getRules();
+        }
+
         for (Rule rule : collectedRules)
         {
             List list = new ArrayList();
@@ -84,20 +90,30 @@ public class PEPMain {
 
             while (list.iterator().hasNext())
             {
-                if( list.iterator().next().equals("deny"))  //value is equal to a String value
+                if( list.iterator().next().equals("deny"))
                 {
                     return deny;
                 }
+            }
 
-                else
 
-                if( list.iterator().next().equals("postpone"))  //value is equal to a String value
+            while (list.iterator().hasNext())
+            {
+                if( list.iterator().next().equals("postpone"))
                 {
                     return postpone;
-
                 }
-                else return  permit;
             }
+
+            while (list.iterator().hasNext())
+            {
+                if( list.iterator().next().equals("permit"))
+                {
+                    return permit;
+                }
+            }
+
+
 
         }
 

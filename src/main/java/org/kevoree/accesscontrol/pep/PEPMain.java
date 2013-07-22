@@ -31,29 +31,23 @@ public class PEPMain {
     }
 
 
-    public void createrule(String rulename, Subject subject, Condition condition, Resource resources_source, Resource resouces_target, AccessControlPolicy acModel)
+    public void createrule(String rulename, Subject subject, Action action, Condition condition, List<Resource> resources_source,  List<Resource>  resouces_target, AccessControlPolicy acModel)
     {
-    //Action is missing
                  AccessControlFactory factory = new DefaultAccessControlFactory();
                  Rule rule = factory.createRule();
                  rule.setName(rulename);
                  rule.setSubject(subject);
                  rule.setCondition(condition);
-
-
-
-
-
-                 rule.setSource((List<Resource>) resources_source);
-                 rule.setTarget((List<Resource>) resouces_target);
+                 rule.setAction(action);
+                 rule.setSource(resources_source);
+                 rule.setTarget(resouces_target);
     }
 
-    //Get privileges
+    //Get rules for a gib
     public boolean check(String id, String action, AccessControlPolicy acModel) {
         List<Rule> collectedRules = new ArrayList<Rule>();
         //locate rules from an ID
         Entity entity = acModel.findEntitiesByID(id);
-
         for (Rule rule : acModel.getRules()) {
             if (rule.getSubject().equals(entity)) {
                 collectedRules.add(rule);
@@ -69,20 +63,28 @@ public class PEPMain {
         return true;
     }
 
-    public boolean PDP(String subject, String action, String resources_source, String resouces_target, Domain domain, AccessControlPolicy acModel) {
+    public String PDP(String subject, String action, String resources_source, String resources_target, Domain domain, AccessControlPolicy acModel) {
+
 
         //locate rules from an ID
+        String  nonapplicable = "no rule is applicable for this evaluation";
         List<Rule> collectedRules = new ArrayList<Rule>();
         collectedRules = domain.getRules();
         for (Rule rule : collectedRules)
         {
-            if ((rule.getSource().equals(resources_source))  && (rule.getSubject().equals(subject)) &&  (rule.getTarget().equals(resouces_target)) )
+            if ((rule.getSource().equals(resources_source))  && (rule.getSubject().equals(subject)) &&  (rule.getTarget().equals(resources_target)) )
             {
-             return true;
+             rule.getEffect();
+             return rule.getEffect().toString();
             }
-        }
-        return false;
+
+
     }
+        return nonapplicable;
+    }
+
+
+
 
     public void delegate(String id,String delegator,String delegatee,AccessControlPolicy acModel)
          //add rules to entity or role
@@ -102,7 +104,10 @@ public class PEPMain {
     }
 
 
-/*
+
+
+
+/*      No order between roles
     public Subject conflictresolution(Entity subject, Entity subject1, Domain domain, TimingCondition condition, AccessControlPolicy acModel)
 {
 
